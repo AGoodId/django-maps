@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.encoding import smart_str
 
 from geopy import geocoders

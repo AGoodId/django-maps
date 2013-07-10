@@ -1,10 +1,15 @@
 from django.db.models.fields import CharField
 from django.utils.translation import ugettext_lazy as _
 
+from .models import GMap
 from .widgets import GMapInput
 
 
 class GMapField(CharField):
+  """Custom field for Google Maps integration that ensures a GMap object
+  is created for each new address string.
+  """
+
   description = _("An address")
 
   def __init__(self, *args, **kwargs):
@@ -17,7 +22,15 @@ class GMapField(CharField):
 
   def get_internal_type(self):
     return "GMapField"
-  
+
+  def pre_save(self, model_instance, add):
+    """Create GMap object and call super before saving field data
+    """
+    value = self.value_from_object(model_instance)
+    gmap = GMap.objects.get_or_create(address=value)
+    print gmap
+    return super(GMapField, self).pre_save(model_instance, add)
+
   def formfield(self, **kwargs):
     defaults = {'max_length': self.max_length,
                 'widget': GMapInput}
