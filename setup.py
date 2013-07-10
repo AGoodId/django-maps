@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 from distutils.core import setup
 
-setup(name='django-map',
+setup(name='django-maps',
       version='0.1',
       description='Django app that provides a model, field and widget for connecting addresses to Google Map geocoded data',
       author='AGoodId',
       author_email='teknik@agoodid.se',
-      url='http://github.com/AGoodId/django-map/',
-      packages=['map',],
+      url='http://github.com/AGoodId/django-maps/',
+      packages=['maps',],
       package_data = {
-          'map': [
+          'maps': [
               'static/*',
               'templates/*.html',
               'templates/*/*.html',
