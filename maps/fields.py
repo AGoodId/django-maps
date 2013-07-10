@@ -26,5 +26,9 @@ class GMapField(CharField):
 
 
 # Tell South how to handle GMapFields
-from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ["^maps\.fields\.GMapField"])
+try:
+  from south.modelsinspector import add_introspection_rules
+except ImportError:
+  pass
+else:
+  add_introspection_rules([], ["^maps\.fields\.GMapField"])
