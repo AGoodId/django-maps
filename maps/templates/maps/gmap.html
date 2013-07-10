@@ -1,0 +1,57 @@
+{% block html %}
+  <!-- HTML map container -->
+  <div id="map-canvas-{{ map_uid }}"
+    style="width: {{ width }}px; height: {{ height }}px;"
+    class="gmap">
+    {% comment %}
+    <noscript>
+      <img alt="Google Map" src="https://maps.google.com/maps/api/staticmap?center={{ lat }},{{ long }}&zoom={{ zoom }}&markers={{ lat }},{{ long }}&size={{ width }}x{{ height }}&sensor=false">
+    </noscript>
+    {% if m.geocode_error %}<!-- geocoding error -->{% endif %}
+    {% endcomment %}
+  </div>
+{% endblock %}
+
+{% block map_js %}
+  <!-- Map creation script -->
+  <script type="text/javascript">
+  function initialize_map_{{ map_uid }}() {
+    var mapElem = document.getElementById("map-canvas-{{ map_uid }}");
+
+    var mapOptions = {
+      zoom: {{ zoom }},
+      center: new google.maps.LatLng({{ markers.0.0 }}, {{ markers.0.1 }}),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    var map = new google.maps.Map(mapElem, mapOptions);
+
+    // create empty LatLngBounds object
+    var m, markers = [],
+        bounds = new google.maps.LatLngBounds();
+    {% for m in markers %}
+      // add position
+      m = new google.maps.Marker({
+        position: new google.maps.LatLng({{ m.0 }}, {{ m.1 }}),
+        map: map
+      });
+      markers.push(m);
+      // extend the bounds to include position
+      bounds.extend(m.position);
+    {% endfor %}
+
+    // fit the map to the newly inclusive bounds
+    map.setCenter(bounds.getCenter());
+  }
+  
+  function loadMapsScript() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "//maps.google.com/maps/api/js?sensor=false&callback=initialize_map_{{ map_uid }}";
+    document.body.appendChild(script);
+  }
+  
+  // initialize the map after page loading
+  window.onload = loadMapsScript;
+  </script>
+{% endblock %}
