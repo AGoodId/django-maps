@@ -27,8 +27,8 @@ class GMapField(CharField):
     """Create GMap object and call super before saving field data
     """
     value = self.value_from_object(model_instance)
-    gmap = GMap.objects.get_or_create(address=value)
-    print gmap
+    if value:
+      gmap = GMap.objects.get_or_create(address=value)
     return super(GMapField, self).pre_save(model_instance, add)
 
   def formfield(self, **kwargs):
