@@ -24,7 +24,7 @@ class GMap(models.Model):
 
   def save(self, *args, **kwargs):
     # fill geocode data if it is unknown
-    if (self.longitude is None) or (self.latitude is None):
+    if not self.longitude or not self.latitude:
       self.geocode()
     super(GMap, self).save(*args, **kwargs)
 
@@ -53,3 +53,4 @@ class GMap(models.Model):
     self.longitude = longitude if longitude else 0
 
     return
+
