@@ -38,10 +38,18 @@ class GMap(models.Model):
     g_func = getattr(settings, "MAPS_GEOCODE_FUNCTION", geocode.google_v3)
 
     try:
-      self.formatted_address, (self.latitude, self.longitude,) = g_func(self.address)
+      formatted_address, (latitude, longitude,) = g_func(self.address)
     except geocode.Error as e:
-      self.geocode_error, self.geocode_error_message = True, e.msg
+      try:
+        self.geocode_error, self.geocode_error_message = True, e.msg
+      except AttributeError:
+        self.geocode_error, self.geocode_error_message = True, ''
+      formatted_address, latitude, longitude = '', 0, 0
     else:
       self.geocode_error = False
+
+    self.formatted_address = formatted_address if formatted_address else ''
+    self.latitude = latitude if latitude else 0
+    self.longitude = longitude if longitude else 0
 
     return
