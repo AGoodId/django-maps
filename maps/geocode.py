@@ -2,7 +2,7 @@ from django.conf import settings
 from django.utils.encoding import smart_str
 
 from geopy import geocoders
-from geopy.exc import GeocoderQueryError
+from geopy.exc import GeocoderQueryError, GeocoderServiceError
 
 
 class Error(Exception):
@@ -14,11 +14,19 @@ def google_v3(address):
   tuple using Google Geocoding API v3.
   """
   gm_key = getattr(settings, "GMAP_KEY", None)
-  g = geocoders.GoogleV3(api_key=gm_key)
+
+  if getattr(settings, "DEBUG", False):
+    default_scheme = 'http'
+  else:
+    default_scheme = 'https'
+  g = geocoders.GoogleV3(
+    api_key=gm_key,
+    default_scheme=default_scheme)
   address = smart_str(address)
   try:
     g_result = g.geocode(address, exactly_one=False)[0]
-  except (UnboundLocalError, ValueError, GeocoderQueryError) as e:
+  except (UnboundLocalError, ValueError,
+          GeocoderQueryError, GeocoderServiceError) as e:
     raise Error(e)
   
   return g_result
