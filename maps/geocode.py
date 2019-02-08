@@ -2,7 +2,7 @@ from django.conf import settings
 from django.utils.encoding import smart_str
 
 from geopy import geocoders
-from geopy.geocoders.base import GeocoderResultError
+from geopy.exc import GeocoderQueryError
 
 
 class Error(Exception):
@@ -18,7 +18,7 @@ def google_v3(address):
   address = smart_str(address)
   try:
     g_result = g.geocode(address, exactly_one=False)[0]
-  except (UnboundLocalError, ValueError, GeocoderResultError) as e:
+  except (UnboundLocalError, ValueError, GeocoderQueryError) as e:
     raise Error(e)
   
   return g_result
