@@ -21,7 +21,7 @@ def google_v3(address):
     default_scheme = 'https'
   g = geocoders.GoogleV3(
     api_key=gm_key,
-    default_scheme=default_scheme)
+    scheme=default_scheme)
   address = smart_str(address)
   try:
     g_result = g.geocode(address, exactly_one=False)[0]
