@@ -40,7 +40,7 @@ class GMap(models.Model):
     try:
       self.formatted_address, (self.latitude, self.longitude,) = g_func(self.address)
     except geocode.Error as e:
-      self.geocode_error, self.geocode_error_message = True, e.msg
+      self.geocode_error, self.geocode_error_message = True, e.message
     else:
       self.geocode_error = False
 
