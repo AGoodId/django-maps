@@ -15,18 +15,14 @@ def google_v3(address):
   """
   gm_key = getattr(settings, "GMAP_KEY", None)
 
-  if getattr(settings, "DEBUG", False):
-    default_scheme = 'http'
-  else:
-    default_scheme = 'https'
   g = geocoders.GoogleV3(
     api_key=gm_key,
-    scheme=default_scheme)
+    scheme='https')
   address = smart_str(address)
   try:
-    g_result = g.geocode(address, exactly_one=False)[0]
+    g_result = g.geocode(address, exactly_one=False)
   except (UnboundLocalError, ValueError,
           GeocoderQueryError, GeocoderServiceError) as e:
     raise Error(e)
   
-  return g_result
+  return g_result[0].address, (g_result[0].latitude, g_result[0].longitude,)
